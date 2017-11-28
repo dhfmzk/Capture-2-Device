@@ -2,19 +2,17 @@
 > Capture unity game screen and Upload to slack by one button!
 
 It is simple plugin for TA process in unity.  
-If you want to see how the 'game scene' feels inside the 'real device', Capture game scene and transfer it to the your device.
+If you want to see how the `game scene` feels inside the `real device`, Capture game scene and transfer it to the your device.
 This plug-in automates the process with a one button.
 
 ![test](/ReadmeResources/EditorWindow.JPG)
 
 
 ## How to Use
-```
-0. Select the folder where you want to save the screenshot. (Add 'folder path' to .gitignore file)
+1. Select the folder where you want to save the screenshot. (Add `folder path` to `.gitignore` file)
 1. Setup 'Slack Bot' and get api token. (See here for more information)
-2. Write the name of the 'Slack channel' you want to upload screenshot (ex. #unity-capture)
-3. Click button and check your slack.
-```
+1. Write the name of the 'Slack channel' you want to upload screenshot (ex. #unity-capture)
+1. Click button and check your slack.
 
 
 ## How to Get your token
