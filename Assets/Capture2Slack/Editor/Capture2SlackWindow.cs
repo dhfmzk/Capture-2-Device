@@ -39,7 +39,7 @@ public class Capture2SlackWindow : EditorWindow {
     void OnGUI() {
 
         // 0. Title
-        logoImage = Resources.Load("S2S Logo Icon", typeof(Texture2D)) as Texture2D;
+        logoImage = Resources.Load("C2S Logo Icon", typeof(Texture2D)) as Texture2D;
         this.imageStyle = new GUIStyle(GUI.skin.label);
         imageStyle.alignment = TextAnchor.MiddleCenter;
         imageStyle.imagePosition = ImagePosition.ImageOnly;
