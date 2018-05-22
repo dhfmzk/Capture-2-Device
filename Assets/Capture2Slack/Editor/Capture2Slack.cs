@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEditor;
 
 using SlackHelper;
 
@@ -18,7 +19,16 @@ namespace OrcaAssist {
 
         private Texture2D screenshot = null;
 
-        private Capture2SlackSetting _SettingData;
+        private static Capture2Slack _instance = null;
+        public static Capture2Slack Instance {
+            get {
+                if(_instance == null) {
+                    _instance = new Capture2Slack();
+                }
+                return _instance;
+            }
+        }
+        
         public Capture2SlackSetting SettingData {
             get {
                 return Capture2SlackSetting.InstanceC2S;
@@ -28,17 +38,24 @@ namespace OrcaAssist {
         // ---------------------------------------------------------------------------
         // Public Method
         // ---------------------------------------------------------------------------
-        public void CaptureAndUpload() {
-            EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureAndUploadCoroutine(), this);
+        [MenuItem("OrcaAssist/Capture 2 Slack/to Slack", false, 100)]
+        public static void ToSlack() {
+            EditorCoroutines.EditorCoroutines.StartCoroutine(Instance.UploadToSlack(), Instance);
+        }
+
+        [MenuItem("OrcaAssist/Capture 2 Slack/Setting", false, 200)]
+        public static void FocusSettingFile() {
+            // Focussing Singleton setting
+            EditorGUIUtility.PingObject(Instance.SettingData);
         }
 
         // ---------------------------------------------------------------------------
         // Upload Worker
         // ---------------------------------------------------------------------------
-        private IEnumerator CaptureAndUploadCoroutine() {
+        private IEnumerator UploadToSlack() {
 
-            this.fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
-            this.backupPath = backupDirPath + "/" + fileName + ".png";
+            fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            backupPath = backupDirPath + "/" + fileName + ".png";
 
             uploadData = new UploadData {
                 token = SettingData.slackToken,
@@ -74,8 +91,9 @@ namespace OrcaAssist {
             yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackAPI.UploadScreenShot(uploadData, this.OnSuccess, this.OnError), this);
 
         }
-        
-        void OnSuccess() {
+
+
+            void OnSuccess() {
             Debug.Log("[Capture to Slack] Upload Success!! Check your slack");
         }
 
