@@ -13,8 +13,6 @@ namespace OrcaAssist {
         // Data
         // ---------------------------------------------------------------------------
         private string fileName = string.Empty;
-        private string backupDirPath = string.Empty;
-        private string backupPath = string.Empty;
         private UploadData uploadData = null;
 
         private Texture2D screenshot = null;
@@ -54,26 +52,52 @@ namespace OrcaAssist {
         // ---------------------------------------------------------------------------
         private IEnumerator UploadToSlack() {
 
-            fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
-            backupPath = backupDirPath + "/" + fileName + ".png";
+            if(!SettingData.IsCompletedData()) {
+                yield break;
+            }
 
+            // 0. Get file name
+            fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string filePath = SettingData.backupPath + "/" + fileName + ".png";
+
+            // 1. Start Capture
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureGameView(filePath), this);
+
+            // 2. Get image file
+            screenshot = new Texture2D(1, 1);
+            byte[] bytes;
+            bytes = System.IO.File.ReadAllBytes(filePath);
+            screenshot.LoadImage(bytes);
+
+            uploadData.screenShot = screenshot;
+
+            // 3. Start Upload
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackAPI.UploadScreenShot(uploadData, this.OnSuccess, this.OnError), this);
+
+        }
+
+        private IEnumerator CaptureGameView(string _filePath) {
+
+            // 0. Make Upload Data
             uploadData = new UploadData {
                 token = SettingData.slackToken,
                 title = SettingData.title,
-                initial_comment = SettingData.defaultComment,
+                initial_comment = SettingData.comment,
                 filename = fileName,
-                channels = SettingData.defaultChannelName
+                channels = SettingData.channelName
             };
 
+            // 1. Caputre Game View
 #if UNITY_2017_1_OR_NEWER
-            ScreenCapture.CaptureScreenshot(backupPath);
+            ScreenCapture.CaptureScreenshot(_filePath);
 #else
             Application.CaptureScreenshot(backupPath);
 #endif
-            Debug.Log("[Capture to Slack] Export scrennshot at " + backupPath);
+            Debug.Log("[Capture to Slack] Export scrennshot at " + _filePath);
 
+            // 2. Wait file write complete
             while(true) {
-                if(System.IO.File.Exists(backupPath)) {
+                if(System.IO.File.Exists(_filePath)) {
                     break;
                 }
                 else {
@@ -81,19 +105,13 @@ namespace OrcaAssist {
                 }
             }
 
-            screenshot = new Texture2D(1, 1);
-            byte[] bytes;
-            bytes = System.IO.File.ReadAllBytes(backupPath);
-            screenshot.LoadImage(bytes);
-
-            uploadData.screenShot = screenshot;
-
-            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackAPI.UploadScreenShot(uploadData, this.OnSuccess, this.OnError), this);
-
+            yield return null;
         }
-
-
-            void OnSuccess() {
+        
+        // ---------------------------------------------------------------------------
+        // Callback Functions
+        // ---------------------------------------------------------------------------
+        void OnSuccess() {
             Debug.Log("[Capture to Slack] Upload Success!! Check your slack");
         }
 
