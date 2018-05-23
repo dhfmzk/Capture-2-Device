@@ -61,4 +61,14 @@ namespace OrcaAssist {
         }
     }
 
+    [CustomEditor(typeof(Capture2SlackSetting))]
+    public class Capture2SlackSettingEditor : Editor {
+        public override void OnInspectorGUI() {
+            base.OnInspectorGUI();
+            EditorGUILayout.Space();
+            if(GUILayout.Button("Open Slack API Site")) {
+                Application.OpenURL("https://api.slack.com/apps");
+            }
+        }
+    }
 }
