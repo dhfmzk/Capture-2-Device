@@ -46,8 +46,26 @@ namespace OrcaAssist {
             return true;
         }
 
+        public bool IsCompletedData() {
+            bool ret = true;
 
-        // private string tellegramToken;
+            if(string.IsNullOrEmpty(slackToken)) {
+                ret = false;
+                Debug.LogError("[C2S SYSTEM] Slack Token is NULL or Empty!");
+            }
+
+            if(!Directory.Exists(backupPath)) {
+                ret = false;
+                Debug.LogError("[C2S SYSTEM] Backup Path is Not Exists. Please write correct path!");
+            }
+
+            if(string.IsNullOrEmpty(channelName)) {
+                ret = false;
+                Debug.LogError("[C2S SYSTEM] Channel Name is NULL or Empty!");
+            }
+
+            return ret;
+        }
 
         // Singleton Pattern
         private static Capture2SlackSetting _instance = null;
