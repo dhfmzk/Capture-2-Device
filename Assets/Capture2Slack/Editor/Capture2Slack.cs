@@ -91,7 +91,7 @@ namespace OrcaAssist {
 #if UNITY_2017_1_OR_NEWER
             ScreenCapture.CaptureScreenshot(_filePath);
 #else
-            Application.CaptureScreenshot(backupPath);
+            Application.CaptureScreenshot(_filePath);
 #endif
             Debug.Log("[Capture to Slack] Export scrennshot at " + _filePath);
 
