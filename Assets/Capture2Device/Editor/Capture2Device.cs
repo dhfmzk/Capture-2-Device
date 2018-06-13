@@ -9,27 +9,23 @@ namespace OrcaAssist {
 
     public class Capture2Device {
 
+        private const string LogTag = "[Capture to Device] {0}";
+
         // ---------------------------------------------------------------------------
         // Data
         // ---------------------------------------------------------------------------
-        private string fileName = string.Empty;
-        private UploadData uploadData = null;
-
-        private Texture2D screenshot = null;
+        private string _fileName = string.Empty;
+        private UploadData _uploadData = null;
+        private Texture2D _screenshot = null;
 
         private static Capture2Device _instance = null;
         public static Capture2Device Instance {
-            get {
-                if(_instance == null) {
-                    _instance = new Capture2Device();
-                }
-                return _instance;
-            }
+            get { return _instance ?? (_instance = new Capture2Device()); }
         }
         
-        public Capture2SlackSetting SettingData {
+        public Capture2DeviceSetting SettingData {
             get {
-                return Capture2SlackSetting.InstanceC2S;
+                return Capture2DeviceSetting.InstanceC2D;
             }
         }
 
@@ -57,47 +53,46 @@ namespace OrcaAssist {
             }
 
             // 0. Get file name
-            fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string filePath = SettingData.backupPath + "/" + fileName + ".png";
+            _fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string filePath = SettingData.BackupPath + "/" + _fileName + ".png";
 
             // 1. Start Capture
             yield return EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureGameView(filePath), this);
 
             // 2. Get image file
-            screenshot = new Texture2D(1, 1);
-            byte[] bytes;
-            bytes = System.IO.File.ReadAllBytes(filePath);
-            screenshot.LoadImage(bytes);
+            _screenshot = new Texture2D(1, 1);
+            byte[] bytes = System.IO.File.ReadAllBytes(filePath);
 
-            uploadData.screenShot = screenshot;
+            _screenshot.LoadImage(bytes);
+            _uploadData.ScreenShot = _screenshot;
 
             // 3. Start Upload
-            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackHelper.SlackHelper.UploadScreenShot(uploadData, this.OnSuccess, this.OnError), this);
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackHelper.SlackHelper.UploadScreenShot(_uploadData, OnSuccess, OnError), this);
 
         }
 
-        private IEnumerator CaptureGameView(string _filePath) {
+        private IEnumerator CaptureGameView(string filePath) {
 
             // 0. Make Upload Data
-            uploadData = new UploadData {
-                token = SettingData.slackToken,
-                title = SettingData.title,
-                initial_comment = SettingData.comment,
-                filename = fileName,
-                channels = SettingData.channelName
+            _uploadData = new UploadData {
+                Token = SettingData.SlackToken,
+                Title = SettingData.Title,
+                InitialComment = SettingData.Comment,
+                Filename = _fileName,
+                Channels = SettingData.ChannelName
             };
 
             // 1. Caputre Game View
 #if UNITY_2017_1_OR_NEWER
-            ScreenCapture.CaptureScreenshot(_filePath);
+            ScreenCapture.CaptureScreenshot(filePath);
 #else
-            Application.CaptureScreenshot(_filePath);
+            Application.CaptureScreenshot(filePath);
 #endif
-            Debug.Log("[Capture to Device] Export scrennshot at " + _filePath);
+            Debug.Log(string.Format(LogTag, "Export scrennshot at " + filePath));
 
             // 2. Wait file write complete
             while(true) {
-                if(System.IO.File.Exists(_filePath)) {
+                if(System.IO.File.Exists(filePath)) {
                     break;
                 }
                 else {
@@ -111,12 +106,12 @@ namespace OrcaAssist {
         // ---------------------------------------------------------------------------
         // Callback Functions
         // ---------------------------------------------------------------------------
-        void OnSuccess() {
-            Debug.Log("[Capture to Device] Upload Success!! Check your slack");
+        private static void OnSuccess() {
+            Debug.Log(string.Format(LogTag, "Upload Success!! Check your slack"));
         }
 
-        void OnError(string _e) {
-            Debug.LogError("[Capture to Device] Upload FAIL!! Error message is... " + _e);
+        private static void OnError(string e) {
+            Debug.LogError(string.Format(LogTag, "Upload FAIL!! Error message is... " + e));
         }
     }
 }

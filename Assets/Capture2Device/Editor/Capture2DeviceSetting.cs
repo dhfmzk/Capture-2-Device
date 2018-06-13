@@ -1,28 +1,28 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 using UnityEditor;
 
 namespace OrcaAssist {
 
     // Capture to Slack plugin setting singleton
-    public class Capture2SlackSetting : ScriptableObject {
+    public class Capture2DeviceSetting : ScriptableObject {
+
+        private const string LogTag = "[C2D Setting] {0}";
 
         [Header("Editor Setting")]
-        public string backupPath;
+        public string BackupPath;
 
         [Header("Slack Setting")]
-        public string slackToken;
-        public string title;
-        public string channelName;
-        public string comment;
+        public string SlackToken;
+        public string Title;
+        public string ChannelName;
+        public string Comment;
 
         [MenuItem("Assets/OrcaAssist/Set C2D Backup Path", false, 1101)]
         private static void SetBackupPath() {
             string selectionPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             string fullPath = Application.dataPath + "/" + selectionPath.Replace("Assets/", "");
-            InstanceC2S.backupPath = fullPath;
+            InstanceC2D.BackupPath = fullPath;
         }
 
         [MenuItem("Assets/OrcaAssist/Set C2D Backup Path", true)]
@@ -38,48 +38,45 @@ namespace OrcaAssist {
             }
             
             string fullPath = Application.dataPath + "/" + selectionPath.Replace("Assets/", "");
-            FileAttributes file_attr = File.GetAttributes(fullPath);
-            if((file_attr & FileAttributes.Directory) != FileAttributes.Directory) {
-                return false;
-            }
+            FileAttributes fileAttr = File.GetAttributes(fullPath);
 
-            return true;
+            return (fileAttr & FileAttributes.Directory) == FileAttributes.Directory;
         }
 
         public bool IsCompletedData() {
             bool ret = true;
 
-            if(string.IsNullOrEmpty(slackToken)) {
+            if(string.IsNullOrEmpty(SlackToken)) {
                 ret = false;
-                Debug.LogError("[C2D SYSTEM] Slack Token is NULL or Empty!");
+                Debug.LogError(string.Format(LogTag, "Slack Token is NULL or Empty!"));
             }
 
-            if(!Directory.Exists(backupPath)) {
+            if(!Directory.Exists(BackupPath)) {
                 ret = false;
-                Debug.LogError("[C2D SYSTEM] Backup Path is Not Exists. Please write correct path!");
+                Debug.LogError(string.Format(LogTag, "Backup Path is Not Exists. Please write correct path!"));
             }
 
-            if(string.IsNullOrEmpty(channelName)) {
+            if(string.IsNullOrEmpty(ChannelName)) {
                 ret = false;
-                Debug.LogError("[C2D SYSTEM] Channel Name is NULL or Empty!");
+                Debug.LogError(string.Format(LogTag, "Channel Name is NULL or Empty!"));
             }
 
             return ret;
         }
 
         // Singleton Pattern
-        private static Capture2SlackSetting _instance = null;
-        public static Capture2SlackSetting InstanceC2S {
+        private static Capture2DeviceSetting _instance = null;
+        public static Capture2DeviceSetting InstanceC2D {
             get {
                 if(!_instance) {
-                    _instance = EditorGUIUtility.Load("C2D Setting.asset") as Capture2SlackSetting;
+                    _instance = EditorGUIUtility.Load("C2D Setting.asset") as Capture2DeviceSetting;
                 }
                 return _instance;
             }
         }
     }
 
-    [CustomEditor(typeof(Capture2SlackSetting))]
+    [CustomEditor(typeof(Capture2DeviceSetting))]
     public class Capture2SlackSettingEditor : Editor {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
