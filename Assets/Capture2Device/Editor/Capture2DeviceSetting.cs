@@ -18,14 +18,14 @@ namespace OrcaAssist {
         public string channelName;
         public string comment;
 
-        [MenuItem("Assets/OrcaAssist/Set C2S Backup Path", false, 1101)]
+        [MenuItem("Assets/OrcaAssist/Set C2D Backup Path", false, 1101)]
         private static void SetBackupPath() {
             string selectionPath = AssetDatabase.GetAssetPath(Selection.activeObject);
             string fullPath = Application.dataPath + "/" + selectionPath.Replace("Assets/", "");
             InstanceC2S.backupPath = fullPath;
         }
 
-        [MenuItem("Assets/OrcaAssist/Set C2S Backup Path", true)]
+        [MenuItem("Assets/OrcaAssist/Set C2D Backup Path", true)]
         private static bool CheckMenu() {
 
             if(Selection.objects.Length > 1) {
@@ -51,17 +51,17 @@ namespace OrcaAssist {
 
             if(string.IsNullOrEmpty(slackToken)) {
                 ret = false;
-                Debug.LogError("[C2S SYSTEM] Slack Token is NULL or Empty!");
+                Debug.LogError("[C2D SYSTEM] Slack Token is NULL or Empty!");
             }
 
             if(!Directory.Exists(backupPath)) {
                 ret = false;
-                Debug.LogError("[C2S SYSTEM] Backup Path is Not Exists. Please write correct path!");
+                Debug.LogError("[C2D SYSTEM] Backup Path is Not Exists. Please write correct path!");
             }
 
             if(string.IsNullOrEmpty(channelName)) {
                 ret = false;
-                Debug.LogError("[C2S SYSTEM] Channel Name is NULL or Empty!");
+                Debug.LogError("[C2D SYSTEM] Channel Name is NULL or Empty!");
             }
 
             return ret;
@@ -72,7 +72,7 @@ namespace OrcaAssist {
         public static Capture2SlackSetting InstanceC2S {
             get {
                 if(!_instance) {
-                    _instance = EditorGUIUtility.Load("C2S Setting.asset") as Capture2SlackSetting;
+                    _instance = EditorGUIUtility.Load("C2D Setting.asset") as Capture2SlackSetting;
                 }
                 return _instance;
             }

@@ -7,7 +7,7 @@ using SlackHelper;
 
 namespace OrcaAssist {
 
-    public class Capture2Slack {
+    public class Capture2Device {
 
         // ---------------------------------------------------------------------------
         // Data
@@ -17,11 +17,11 @@ namespace OrcaAssist {
 
         private Texture2D screenshot = null;
 
-        private static Capture2Slack _instance = null;
-        public static Capture2Slack Instance {
+        private static Capture2Device _instance = null;
+        public static Capture2Device Instance {
             get {
                 if(_instance == null) {
-                    _instance = new Capture2Slack();
+                    _instance = new Capture2Device();
                 }
                 return _instance;
             }
@@ -36,12 +36,12 @@ namespace OrcaAssist {
         // ---------------------------------------------------------------------------
         // Public Method
         // ---------------------------------------------------------------------------
-        [MenuItem("OrcaAssist/Capture 2 Slack/to Slack", false, 100)]
+        [MenuItem("OrcaAssist/Capture 2 Device/to Slack", false, 100)]
         public static void ToSlack() {
             EditorCoroutines.EditorCoroutines.StartCoroutine(Instance.UploadToSlack(), Instance);
         }
 
-        [MenuItem("OrcaAssist/Capture 2 Slack/Setting", false, 200)]
+        [MenuItem("OrcaAssist/Capture 2 Device/Setting", false, 200)]
         public static void FocusSettingFile() {
             // Focussing Singleton setting
             EditorGUIUtility.PingObject(Instance.SettingData);
@@ -72,7 +72,7 @@ namespace OrcaAssist {
             uploadData.screenShot = screenshot;
 
             // 3. Start Upload
-            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackAPI.UploadScreenShot(uploadData, this.OnSuccess, this.OnError), this);
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackHelper.SlackHelper.UploadScreenShot(uploadData, this.OnSuccess, this.OnError), this);
 
         }
 
@@ -93,7 +93,7 @@ namespace OrcaAssist {
 #else
             Application.CaptureScreenshot(_filePath);
 #endif
-            Debug.Log("[Capture to Slack] Export scrennshot at " + _filePath);
+            Debug.Log("[Capture to Device] Export scrennshot at " + _filePath);
 
             // 2. Wait file write complete
             while(true) {
@@ -112,11 +112,11 @@ namespace OrcaAssist {
         // Callback Functions
         // ---------------------------------------------------------------------------
         void OnSuccess() {
-            Debug.Log("[Capture to Slack] Upload Success!! Check your slack");
+            Debug.Log("[Capture to Device] Upload Success!! Check your slack");
         }
 
         void OnError(string _e) {
-            Debug.LogError("[Capture to Slack] Upload FAIL!! Error message is... " + _e);
+            Debug.LogError("[Capture to Device] Upload FAIL!! Error message is... " + _e);
         }
     }
 }

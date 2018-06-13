@@ -14,13 +14,13 @@ namespace SlackHelper {
         public Texture2D screenShot = null;
     }
 
-    public static class SlackAPI {
+    public static class SlackHelper {
         
         public static IEnumerator UploadScreenShot(UploadData data, Action onSuccess = null, Action<string> onError = null) {
             yield return new WaitForSeconds(0.1f);
          
-            var form = new WWWForm();
-            var contents = data.screenShot.EncodeToPNG();
+            WWWForm form = new WWWForm();
+            byte[] contents = data.screenShot.EncodeToPNG();
 
             form.AddField("token", data.token);
             form.AddField("title", data.title);
@@ -29,10 +29,10 @@ namespace SlackHelper {
 
             form.AddBinaryData("file", contents, data.filename, "image/png");
 
-            var url = "https://slack.com/api/files.upload";
-            var www = new WWW(url, form);
+            string url = "https://slack.com/api/files.upload";
+            WWW www = new WWW(url, form);
             yield return www;
-            var error = www.error;
+            string error = www.error;
 
             if(!string.IsNullOrEmpty(error)) {
                 if(onError != null) {
