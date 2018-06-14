@@ -14,9 +14,13 @@ namespace OrcaAssist {
 
         [Header("Slack Setting")]
         public string SlackToken;
-        public string Title;
-        public string ChannelName;
-        public string Comment;
+        public string SlackTitle;
+        public string SlackChannelName;
+        public string SlackComment;
+
+        [Header("Telegram Setting")]
+        public string TelegramToken;
+        public string TelegramChatId;
 
         [MenuItem("Assets/OrcaAssist/Set C2D Backup Path", false, 1101)]
         private static void SetBackupPath() {
@@ -43,7 +47,7 @@ namespace OrcaAssist {
             return (fileAttr & FileAttributes.Directory) == FileAttributes.Directory;
         }
 
-        public bool IsCompletedData() {
+        public bool IsCompletedSlackData() {
             bool ret = true;
 
             if(string.IsNullOrEmpty(SlackToken)) {
@@ -56,9 +60,30 @@ namespace OrcaAssist {
                 Debug.LogError(string.Format(LogTag, "Backup Path is Not Exists. Please write correct path!"));
             }
 
-            if(string.IsNullOrEmpty(ChannelName)) {
+            if(string.IsNullOrEmpty(SlackChannelName)) {
                 ret = false;
                 Debug.LogError(string.Format(LogTag, "Channel Name is NULL or Empty!"));
+            }
+
+            return ret;
+        }
+
+        public bool IsCompletedTelegaramData() {
+            bool ret = true;
+
+            if(string.IsNullOrEmpty(TelegramToken)) {
+                ret = false;
+                Debug.LogError(string.Format(LogTag, "Telegram Token is NULL or Empty!"));
+            }
+
+            if(!Directory.Exists(BackupPath)) {
+                ret = false;
+                Debug.LogError(string.Format(LogTag, "Backup Path is Not Exists. Please write correct path!"));
+            }
+
+            if(string.IsNullOrEmpty(TelegramChatId)) {
+                ret = false;
+                Debug.LogError(string.Format(LogTag, "Chat ID is NULL or Empty!"));
             }
 
             return ret;

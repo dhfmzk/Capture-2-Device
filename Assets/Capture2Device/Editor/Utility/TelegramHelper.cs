@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TelegramHelper {
     
     [Serializable]
-    public class TelegramUploadData {
+    public class UploadData {
         public string Token = string.Empty;
         public string FileName = string.Empty;
         public string ChatId = string.Empty;
@@ -16,7 +16,7 @@ namespace TelegramHelper {
 
         private static string BaseUrl = "https://api.telegram.org/bot{0}/{1}";
 
-        public static IEnumerator UploadScreenShot(TelegramUploadData data, Action onSuccess = null, Action<string> onError = null) {
+        public static IEnumerator UploadScreenShot(UploadData data, Action onSuccess = null, Action<string> onError = null) {
             yield return new WaitForSeconds(0.1f);
          
             WWWForm form = new WWWForm();
