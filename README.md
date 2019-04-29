@@ -8,7 +8,7 @@ If you want to see how your `game scene` feels inside the `real device`, You hav
 This plug-in automates this process with a one button.
 
 ## To Do
-- [x] : Add telegram api
+- [ ] : Add Discord api
 - [ ] : Upgrade setting data asset Inspector UI
 - [ ] : Auto update backup path in `.gitignore`
 - [ ] : Add setup guide
@@ -25,10 +25,13 @@ This plug-in automates this process with a one button.
 
 
 ## How to Get Token
-#### Slack
+### Slack
 ***UPDATE SOON***
 
-#### Telegram
+### Telegram
+***UPDATE SOON***
+
+### Discord
 ***UPDATE SOON***
 
 ## License
