@@ -4,35 +4,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace SlackHelper {
+namespace DiscordHelper {
     
     [Serializable]
     public class UploadData {
+        public string webHookId = string.Empty;
         public string Token = string.Empty;
-        public string Filename = string.Empty;
-        public string Title = string.Empty;
-        public string InitialComment = string.Empty;
-        public string Channels = string.Empty;
+        public string FileName = string.Empty;
         public Texture2D ScreenShot = null;
     }
 
-    public static class SlackHelper {
+    public static class DiscordHelper {
 
-        private const string apiUrl = "https://slack.com/api";
+        private static string apiUrl = "https://discordapp.com/api/webhooks";
 
         public static IEnumerator UploadScreenShot(UploadData data, Action onSuccess = null, Action<string> onError = null) {
             yield return new WaitForSeconds(0.1f);
-
+         
             List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
             byte[] contents = data.ScreenShot.EncodeToPNG();
 
-            formData.Add( new MultipartFormDataSection("token", data.Token) );
-            formData.Add( new MultipartFormDataSection("title", data.Title) );
-            formData.Add( new MultipartFormDataSection("initial_comment", data.InitialComment) );
-            formData.Add( new MultipartFormDataSection("channels", data.Channels) );
-            formData.Add( new MultipartFormFileSection("file", contents, data.Filename, "image/png") );
-            
-            UnityWebRequest www = UnityWebRequest.Post($"{apiUrl}/files.upload", formData);
+            formData.Add( new MultipartFormFileSection("file", contents, data.FileName, "image/png") );
+
+            UnityWebRequest www = UnityWebRequest.Post($"{apiUrl}/{data.webHookId}/{data.Token}", formData);
 
             yield return www;
             string error = www.error;
