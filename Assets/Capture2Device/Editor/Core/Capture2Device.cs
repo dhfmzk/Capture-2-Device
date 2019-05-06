@@ -3,13 +3,19 @@ using System.Collections;
 using UnityEngine;
 using UnityEditor;
 
+using EditorCoroutines;
+using SlackHelper;
+using TelegramHelper;
+using DiscordHelper;
+
 namespace OrcaAssist {
 
     public class Capture2Device {
 
         private const string LogTag = "[Capture to Device] {0}";
 
-        private string _fileName = string.Empty;
+        private static string _fileName = string.Empty;
+        private static string filePath = string.Empty;
         private Texture2D _screenshot = null;
 
         private static Capture2Device _instance = null;
@@ -25,29 +31,20 @@ namespace OrcaAssist {
         
         [MenuItem("OrcaAssist/Capture 2 Device/to Slack", false, 100)]
         public static void ToSlack() {
-            EditorCoroutines.EditorCoroutines.StartCoroutine(Instance.UploadToSlack(), Instance);
-        }
-
-        [MenuItem("OrcaAssist/Capture 2 Device/to Telegram", false, 101)]
-        public static void ToTelegram() {
-            EditorCoroutines.EditorCoroutines.StartCoroutine(Instance.UploadToTelegram(), Instance);
-        }
-
-        [MenuItem("OrcaAssist/Capture 2 Device/Setting", false, 200)]
-        public static void FocusSettingFile() {
-            EditorGUIUtility.PingObject(Instance.SettingData);
-        }
-        
-        private IEnumerator UploadToSlack() {
             
-            if(!SettingData.IsCompletedSlackData()) {
-                yield break;
-            }
+            EditorCoroutines.EditorCoroutines.StartCoroutine(Instance.CaptureToSlack(), Instance);
+        }
+
+        private IEnumerator CaptureToSlack() {
+            
+            if(!SettingData.IsCompletedSlackData()) yield break;
 
             _fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string filePath = SettingData.BackupPath + "/" + _fileName + ".png";
+            filePath = $"{SettingData.BackupPath}/{_fileName}.png";
 
-            SlackHelper.UploadData uploadData = new SlackHelper.UploadData {
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureGameView(filePath), this);
+
+            var uploadData = new SlackHelper.UploadData {
                 Token = SettingData.SlackToken,
                 Title = SettingData.SlackTitle,
                 InitialComment = SettingData.SlackComment,
@@ -55,33 +52,34 @@ namespace OrcaAssist {
                 Channels = SettingData.SlackChannelName,
             };
 
-            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureGameView(filePath), this);
-            
             _screenshot = new Texture2D(1, 1);
             byte[] bytes = System.IO.File.ReadAllBytes(filePath);
             _screenshot.LoadImage(bytes);
             uploadData.ScreenShot = _screenshot;
-            
-            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackHelper.SlackHelper.UploadScreenShot(uploadData, OnSuccess, OnError), this);
 
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(SlackHelper.SlackHelper.UploadScreenShot(uploadData, OnSuccess, OnError), this);
         }
 
-        private IEnumerator UploadToTelegram() {
+        [MenuItem("OrcaAssist/Capture 2 Device/to Telegram", false, 101)]
+        public static void ToTelegram() {
 
-            if(!SettingData.IsCompletedTelegaramData()) {
-                yield break;
-            }
+            EditorCoroutines.EditorCoroutines.StartCoroutine(Instance.CaptureToTelegram(), Instance);
+        }
+
+        private IEnumerator CaptureToTelegram() {
             
-            _fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string filePath = SettingData.BackupPath + "/" + _fileName + ".png";
+            if(!SettingData.IsCompletedTelegaramData()) yield break;
 
-            TelegramHelper.UploadData uploadData = new TelegramHelper.UploadData {
+            _fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            filePath = $"{SettingData.BackupPath}/{_fileName}.png";
+
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureGameView(filePath), this);
+
+            var uploadData = new TelegramHelper.UploadData {
                 Token = SettingData.TelegramToken,
                 FileName = _fileName,
                 ChatId = SettingData.TelegramToken,
             };
-
-            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureGameView(filePath), this);
 
             _screenshot = new Texture2D(1, 1);
             byte[] bytes = System.IO.File.ReadAllBytes(filePath);
@@ -89,8 +87,43 @@ namespace OrcaAssist {
             uploadData.ScreenShot = _screenshot;
 
             yield return EditorCoroutines.EditorCoroutines.StartCoroutine(TelegramHelper.TelegramHelper.UploadScreenShot(uploadData, OnSuccess, OnError), this);
-
         }
+
+        [MenuItem("OrcaAssist/Capture 2 Device/to Discord", false, 102)]
+        public static void ToDiscord() {
+
+            EditorCoroutines.EditorCoroutines.StartCoroutine(Instance.CaptureToDiscord(), Instance);
+        }
+
+        private IEnumerator CaptureToDiscord() {
+            
+            if(!SettingData.IsCompletedDiscordData()) yield break;
+
+            _fileName = DateTime.Now.ToString("yyyyMMddHHmmss");
+            filePath = $"{SettingData.BackupPath}/{_fileName}.png";
+
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(CaptureGameView(filePath), this);
+
+            var uploadData = new DiscordHelper.UploadData {
+                webHookId = SettingData.DiscordWebhookId,
+                Token = SettingData.DiscordToken,
+                FileName = _fileName
+            };
+
+            _screenshot = new Texture2D(1, 1);
+            byte[] bytes = System.IO.File.ReadAllBytes(filePath);
+            _screenshot.LoadImage(bytes);
+            uploadData.ScreenShot = _screenshot;
+
+            yield return EditorCoroutines.EditorCoroutines.StartCoroutine(DiscordHelper.DiscordHelper.UploadScreenShot(uploadData, OnSuccess, OnError), this);
+        }
+
+
+        [MenuItem("OrcaAssist/Capture 2 Device/Setting", false, 200)]
+        public static void FocusSettingFile() {
+            EditorGUIUtility.PingObject(Instance.SettingData);
+        }
+
 
         private static IEnumerator CaptureGameView(string filePath) {
 
@@ -111,6 +144,8 @@ namespace OrcaAssist {
                     yield return new WaitForSeconds(0.5f);
                 }
             }
+
+            AssetDatabase.Refresh();
 
             yield return null;
         }

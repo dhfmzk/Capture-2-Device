@@ -22,6 +22,11 @@ namespace OrcaAssist {
         public string TelegramToken;
         public string TelegramChatId;
 
+        [Header("Discord Setting")]
+        public string DiscordWebhookId;
+        public string DiscordToken;
+        public string DiscordChatId;
+
         [MenuItem("Assets/OrcaAssist/Set C2D Backup Path", false, 1101)]
         private static void SetBackupPath() {
             string selectionPath = AssetDatabase.GetAssetPath(Selection.activeObject);
@@ -52,17 +57,17 @@ namespace OrcaAssist {
 
             if(string.IsNullOrEmpty(SlackToken)) {
                 ret = false;
-                Debug.LogError(string.Format(LogTag, "Slack Token is NULL or Empty!"));
+                Debug.LogError($"{LogTag} Slack Token is NULL or Empty!");
             }
 
             if(!Directory.Exists(BackupPath)) {
                 ret = false;
-                Debug.LogError(string.Format(LogTag, "Backup Path is Not Exists. Please write correct path!"));
+                Debug.LogError($"{LogTag} Backup Path is Not Exists. Please write correct path!");
             }
 
             if(string.IsNullOrEmpty(SlackChannelName)) {
                 ret = false;
-                Debug.LogError(string.Format(LogTag, "Channel Name is NULL or Empty!"));
+                Debug.LogError($"{LogTag} Channel Name is NULL or Empty!");
             }
 
             return ret;
@@ -73,17 +78,38 @@ namespace OrcaAssist {
 
             if(string.IsNullOrEmpty(TelegramToken)) {
                 ret = false;
-                Debug.LogError(string.Format(LogTag, "Telegram Token is NULL or Empty!"));
+                Debug.LogError($"{LogTag} Telegram Token is NULL or Empty!");
             }
 
             if(!Directory.Exists(BackupPath)) {
                 ret = false;
-                Debug.LogError(string.Format(LogTag, "Backup Path is Not Exists. Please write correct path!"));
+                Debug.LogError($"{LogTag} Backup Path is Not Exists. Please write correct path!");
             }
 
             if(string.IsNullOrEmpty(TelegramChatId)) {
                 ret = false;
-                Debug.LogError(string.Format(LogTag, "Chat ID is NULL or Empty!"));
+                Debug.LogError($"{LogTag} Chat ID is NULL or Empty!");
+            }
+
+            return ret;
+        }
+
+        public bool IsCompletedDiscordData() {
+            bool ret = true;
+
+            if(string.IsNullOrEmpty(DiscordToken)) {
+                ret = false;
+                Debug.LogError($"{LogTag} Discord Token is NULL or Empty!");
+            }
+            
+            if(string.IsNullOrEmpty(DiscordWebhookId)) {
+                ret = false;
+                Debug.LogError($"{LogTag} Discord Webhook Id is NULL or Empty!");
+            }
+
+            if(!Directory.Exists(BackupPath)) {
+                ret = false;
+                Debug.LogError($"{LogTag} Backup Path is Not Exists. Please write correct path!");
             }
 
             return ret;
