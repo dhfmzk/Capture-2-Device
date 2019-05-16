@@ -8,8 +8,9 @@ If you want to see how your `game scene` feels inside the `real device`, You hav
 This plug-in automates this process with a one button.
 
 ## To Do
-- [ ] : Add Discord api
-- [ ] : Upgrade setting data asset Inspector UI
+- [X] : Add Discord api
+- [X] : Upgrade setting data asset Inspector UI
+- [x] : Convert WWW to UnityWebRequest
 - [ ] : Auto update backup path in `.gitignore`
 - [ ] : Add setup guide
 
