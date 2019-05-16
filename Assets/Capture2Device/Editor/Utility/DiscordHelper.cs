@@ -19,16 +19,17 @@ namespace DiscordHelper {
         private static string apiUrl = "https://discordapp.com/api/webhooks";
 
         public static IEnumerator UploadScreenShot(UploadData data, Action onSuccess = null, Action<string> onError = null) {
+            
             yield return new WaitForSeconds(0.1f);
          
             List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
             byte[] contents = data.ScreenShot.EncodeToPNG();
 
-            formData.Add( new MultipartFormFileSection("file", contents, data.FileName, "image/png") );
+            formData.Add( new MultipartFormFileSection("file", contents, data.FileName+".png", "image/png") );
 
             UnityWebRequest www = UnityWebRequest.Post($"{apiUrl}/{data.webHookId}/{data.Token}", formData);
 
-            yield return www;
+            yield return www.SendWebRequest();
             string error = www.error;
 
             if(!string.IsNullOrEmpty(error)) {

@@ -76,16 +76,6 @@ namespace EditorCoroutines
 			}
 		}
 
-		struct YieldWWW : ICoroutineYield
-		{
-			public WWW Www;
-
-			public bool IsDone(float deltaTime)
-			{
-				return Www.isDone;
-			}
-		}
-
 		struct YieldWebRequest : ICoroutineYield
 		{
 			public UnityWebRequest Www;
@@ -364,10 +354,6 @@ namespace EditorCoroutines
 			{
 				float seconds = float.Parse(GetInstanceField(typeof(WaitForSeconds), current, "m_Seconds").ToString());
 				coroutine.currentYield = new YieldWaitForSeconds() {timeLeft = (float) seconds};
-			}
-			else if (current is WWW)
-			{
-				coroutine.currentYield = new YieldWWW {Www = (WWW) current};
 			}
 			else if (current is UnityWebRequest)
 			{
