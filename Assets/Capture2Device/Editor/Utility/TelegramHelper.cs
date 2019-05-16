@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace TelegramHelper {
     
@@ -14,20 +16,22 @@ namespace TelegramHelper {
 
     public static class TelegramHelper {
 
-        private static string BaseUrl = "https://api.telegram.org/bot{0}/{1}";
+        private static string BaseUrl = "https://api.telegram.org/bot";
 
         public static IEnumerator UploadScreenShot(UploadData data, Action onSuccess = null, Action<string> onError = null) {
+            
             yield return new WaitForSeconds(0.1f);
          
-            WWWForm form = new WWWForm();
+            List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
             byte[] contents = data.ScreenShot.EncodeToPNG();
             
-            form.AddField("chat_id", data.ChatId);
-            form.AddField("caption", data.FileName);
-            form.AddBinaryData("photo", contents, data.FileName, "image/png");
+            formData.Add(new MultipartFormDataSection("chat_id", data.ChatId));
+            formData.Add(new MultipartFormDataSection("caption", data.FileName));
+            formData.Add(new MultipartFormFileSection("photo", contents, $"{data.FileName}.png", "image/png"));
 
-            WWW www = new WWW(string.Format(BaseUrl, data.Token, "sendPhoto"), form);
-            yield return www;
+            UnityWebRequest www = UnityWebRequest.Post($"{BaseUrl}{data.Token}/sendPhoto", formData);
+            
+            yield return www.SendWebRequest();
             string error = www.error;
 
             if(!string.IsNullOrEmpty(error)) {

@@ -21,20 +21,21 @@ namespace SlackHelper {
         private const string apiUrl = "https://slack.com/api";
 
         public static IEnumerator UploadScreenShot(UploadData data, Action onSuccess = null, Action<string> onError = null) {
+            
             yield return new WaitForSeconds(0.1f);
 
             List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
             byte[] contents = data.ScreenShot.EncodeToPNG();
 
-            formData.Add( new MultipartFormDataSection("token", data.Token) );
-            formData.Add( new MultipartFormDataSection("title", data.Title) );
-            formData.Add( new MultipartFormDataSection("initial_comment", data.InitialComment) );
-            formData.Add( new MultipartFormDataSection("channels", data.Channels) );
-            formData.Add( new MultipartFormFileSection("file", contents, data.Filename, "image/png") );
+            formData.Add(new MultipartFormDataSection("token", data.Token));
+            formData.Add(new MultipartFormDataSection("title", data.Title));
+            formData.Add(new MultipartFormDataSection("initial_comment", data.InitialComment));
+            formData.Add(new MultipartFormDataSection("channels", data.Channels));
+            formData.Add(new MultipartFormFileSection("file", contents, data.Filename, "image/png"));
             
             UnityWebRequest www = UnityWebRequest.Post($"{apiUrl}/files.upload", formData);
 
-            yield return www;
+            yield return www.SendWebRequest();;
             string error = www.error;
 
             if(!string.IsNullOrEmpty(error)) {
