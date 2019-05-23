@@ -22,7 +22,7 @@ This plug-in automates this process with a one button.
 > 1. Click right button, Find and Click `OrcaAssist > Set C2D Backup Path`
 > 1. Setup 'Slack Bot' or `Telegram Bot` and get api token. (See here for more information)
 > 1. Write more setting infomation (ex. channel name, chat_id etc... )
-> 1. Now, you can use `OrcaAssist > Capture 2 Device > to Slack` or `to Telegram` function
+> 1. Now, you can use `OrcaAssist > Capture 2 Device > to Slack`, `to Telegram` or `to Discord` function
 
 
 ## How to Get Token
@@ -33,7 +33,8 @@ This plug-in automates this process with a one button.
 ***UPDATE SOON***
 
 ### Discord
-***UPDATE SOON***
+> Really easy to acquire tokens for webhook.
+https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks
 
 ## License
 
