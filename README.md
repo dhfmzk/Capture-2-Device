@@ -1,16 +1,26 @@
-# Capture-2-Device
-> Capture unity game scene and Upload to slack by one button!
+<h1 align="center">Capture-2-Device</h1>
 
-<img src="https://github.com/rlatkdgus500/Capture-2-Device/blob/master/Logo.png" align="center" width=256 height=256 />
+<p align="center">
+  <img src="./Logo.png" alt="Capture-2-Device" width="256px" />
+</p>
+
+<p align="center">
+  <a href="https://unity3d.com/kr/get-unity/download/archive">
+    <img src="https://img.shields.io/badge/unity-2019.1.0f2-blue.svg" alt="Platform"/>
+  </a>
+  <a href="https://github.com/rlatkdgus500/Capture-2-Device/commits/master">
+    <img src="https://img.shields.io/github/last-commit/rlatkdgus500/Capture-2-Device.svg" alt="Last Commit"/>
+  </a>
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/github/license/rlatkdgus500/Capture-2-Device.svg" alt="MIT License"/>
+  </a>
+</p>
 
 It is simple plugin for TA process in unity.  
 If you want to see how your `game scene` feels inside the `real device`, You have to capture game scene and transfer it to the your device.  
 This plug-in automates this process with a one button.
 
 ## To Do
-- [X] : Add Discord api
-- [X] : Upgrade setting data asset Inspector UI
-- [x] : Convert WWW to UnityWebRequest
 - [ ] : Auto update backup path in `.gitignore`
 - [ ] : Add setup guide
 
@@ -33,8 +43,7 @@ This plug-in automates this process with a one button.
 ***UPDATE SOON***
 
 ### Discord
-> Really easy to acquire tokens for webhook.
-https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks
+> Really easy to acquire tokens for webhook. Check [Here](https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
 
 ## License
 
