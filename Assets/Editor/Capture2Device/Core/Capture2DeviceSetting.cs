@@ -120,7 +120,7 @@ namespace OrcaAssist {
         public static Capture2DeviceSetting InstanceC2D {
             get {
                 if(!_instance) {
-                    _instance = EditorGUIUtility.Load("C2D Setting.asset") as Capture2DeviceSetting;
+                    _instance = Resources.Load("C2D Setting") as Capture2DeviceSetting;
                 }
                 return _instance;
             }
