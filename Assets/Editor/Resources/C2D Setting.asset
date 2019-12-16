@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f7e90d0d5b1a148a62212acd8ab274, type: 3}
   m_Name: C2D Setting
   m_EditorClassIdentifier: 
-  BackupPath: /Users/hyeon/Documents/Capture-2-Device/Assets/Capture2Device/Editor
+  BackupPath: 
   SlackToken: 
   SlackTitle: 
   SlackChannelName: 
   SlackComment: 
   TelegramToken: 
   TelegramChatId: 
-  DiscordWebhookId: 574578235309031438
-  DiscordToken: bL6kRiWGqv5QJH5p_96k2vkN4r2yVUdisEvzZke-W-cA9MAjo0FFYD3T2qE2JwFjwe5S
+  DiscordWebhookId: 
+  DiscordToken: 
   DiscordChatId: 
